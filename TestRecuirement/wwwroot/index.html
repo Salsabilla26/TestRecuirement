@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Summary Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <canvas id="salesChart" width="400" height="200"></canvas>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "http://localhost:5000/api/SalesSummary",
+                method: "GET",
+                success: function (data) {
+                    var labels = data.map(function (item) { return item.Item; });
+                    var revenues = data.map(function (item) { return item.Revenue; });
+
+                    var ctx = document.getElementById('salesChart').getContext('2d');
+                    var salesChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Revenue',
+                                data: revenues,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function () {
+                    alert('Error loading data');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
